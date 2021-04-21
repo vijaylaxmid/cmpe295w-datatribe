@@ -67,6 +67,19 @@ def add_transction():
 
   return transaction_schema.jsonify(new_transaction)
 
+# Get all transactions
+@app.route('/transaction', methods=['GET'])
+def get_transactions():
+  all_transactions = Transaction.query.all()
+  result = transactions_schema.dump(all_transactions)
+  return jsonify(result)
+
+# Get Single Transaction
+@app.route('/transaction/<id>', methods=['GET'])
+def get_transaction(id):
+  transaction = Transaction.query.get(id)
+  return transaction_schema.jsonify(transaction)
+
   
 
 
