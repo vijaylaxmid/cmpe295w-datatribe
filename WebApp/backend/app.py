@@ -103,6 +103,13 @@ def add_user():
   return user_schema.jsonify(new_user)
 
 
+# Get all users
+@app.route('/api/user/<user>/info', methods=['GET'])
+def get_user(user):
+  users = User.query.filter_by(user=user).first()
+  return user_schema.jsonify(users)
+
+
 # Create a Transaction
 @app.route('/api/portfolio/transaction', methods=['POST'])
 def add_transction():
