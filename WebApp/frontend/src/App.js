@@ -1,32 +1,72 @@
-import React, { Fragment } from 'react';
-import { Route } from 'react-router-dom';
-import { LoginCallback } from '@okta/okta-react';
+import React from "react";
+
+import Profile from "./components/Profile";
 import {
-  CssBaseline,
-  withStyles,
-} from '@material-ui/core';
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  NavbarText,
+} from "reactstrap";
 
-import AppHeader from './components/AppHeader';
-import Home from './pages/Home';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+} from "react-router-dom";
 
-const styles = theme => ({
-  main: {
-    padding: theme.spacing(3),
-    [theme.breakpoints.down('xs')]: {
-      padding: theme.spacing(2),
-    },
-  },
-});
+import PasswordChangeForm from "./components/Password";
+import PhoneChangeForm from "./components/Phone";
+import HistoryForm from "./components/HistoryForm";
+function App() {
+  return (
+    <Router>
+      <div>
+        <Navbar color="light" light expand="md">
+          <NavbarBrand href="/">Stock App</NavbarBrand>
 
-const App = ({ classes }) => (
-  <Fragment>
-    <CssBaseline />
-    <AppHeader />
-    <main className={classes.main}>
-    <Route exact path="/" component={Home} />
-    <Route path="/login/callback" component={LoginCallback} />
-    </main>
-  </Fragment>
-);
+          <Nav navbar>
+            <NavItem>
+              <NavLink href="/api/user/rimzim/info">Profile</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/password">Change Password</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/phone">Change Phone Number</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/history">History</NavLink>
+            </NavItem>
+          </Nav>
+        </Navbar>
 
-export default withStyles(styles)(App);
+        <Switch>
+          <Route path="/api/user/rimzim/info">
+            <Profile />
+          </Route>
+          <Route path="/password">
+            <PasswordChangeForm />
+          </Route>
+          <Route path="/phone">
+            <PhoneChangeForm />
+          </Route>
+          <Route path="/history">
+            <HistoryForm></HistoryForm>
+          </Route>
+        </Switch>
+      </div>
+    </Router>
+  );
+}
+
+export default App;

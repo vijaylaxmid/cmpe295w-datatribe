@@ -1,12 +1,15 @@
-import React from 'react';
+import React from "react";
 import {
   AppBar,
+  Button,
   Toolbar,
   Typography,
   withStyles,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
-import LoginButton from './LoginButton';
+import LoginButton from "./LoginButton";
+import Profile from "./Profile";
+import { Redirect } from "react-router-dom";
 
 const styles = {
   flex: {

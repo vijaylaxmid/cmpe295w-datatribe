@@ -104,10 +104,12 @@ def add_user():
 
 
 # Get all users
-@app.route('/api/user/<user>/info', methods=['GET'])
+@app.route('/api/user/rimzim/info', methods=['GET'])
 def get_user(user):
-  users = User.query.filter_by(user=user).first()
+ # print("test"+user)
+  users = User.query.filter_by(user="rimzim").first()
   return user_schema.jsonify(users)
+ #return {"userName":"rimzim123","phone":"123456","email":"abc@gmail.com"}
 
 
 # Create a Transaction
@@ -122,7 +124,6 @@ def add_transction():
   user = request.json['user']
 
   new_transaction = Transaction(transactionType, stockTicker, price, numberOfStocks, date, mode, user)
-
   db.session.add(new_transaction)
   db.session.commit()
 
