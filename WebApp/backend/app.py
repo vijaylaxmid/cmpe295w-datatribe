@@ -84,6 +84,10 @@ class UserSchema(ma.Schema):
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
+@app.errorhandler(404)
+def page_not_found(error):
+    return 'This route does not exist {}'.format(request.url), 404 
+
 # Create user info
 @app.route('/api/user', methods=['POST'])
 def add_user():
@@ -102,6 +106,28 @@ def add_user():
 
   return user_schema.jsonify(new_user)
 
+# Update user info
+@app.route('/api/user/<user>', methods=['PUT'])
+def update_user(user):
+    userUpdate = User.query.get(user)
+
+    
+    buyingPower = request.json['buyingPower']
+    userName = request.json['userName']
+    phone = request.json['phone']
+    address = request.json['address']
+    email = request.json['email']
+
+    userUpdate.user = user
+    userUpdate.buyingPower = buyingPower
+    userUpdate.userName = userName
+    userUpdate.phone = phone
+    userUpdate.address = address
+    userUpdate.email = email
+
+    db.session.commit()
+
+    return user_schema.jsonify(userUpdate)
 
 # Get all users
 @app.route('/api/user/<user>/info', methods=['GET'])

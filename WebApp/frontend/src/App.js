@@ -1,13 +1,11 @@
 import React, { Fragment } from 'react';
-import { Route } from 'react-router-dom';
-import { LoginCallback } from '@okta/okta-react';
 import {
   CssBaseline,
   withStyles,
 } from '@material-ui/core';
 
 import AppHeader from './components/AppHeader';
-import Home from './pages/Home';
+import AppWithRouterAccess from './AppWithRouterAccess';
 
 const styles = theme => ({
   main: {
@@ -23,8 +21,7 @@ const App = ({ classes }) => (
     <CssBaseline />
     <AppHeader />
     <main className={classes.main}>
-    <Route exact path="/" component={Home} />
-    <Route path="/login/callback" component={LoginCallback} />
+      <AppWithRouterAccess></AppWithRouterAccess>
     </main>
   </Fragment>
 );
