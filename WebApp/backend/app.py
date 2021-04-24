@@ -3,6 +3,8 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 import os
+from sqlalchemy import Table, Column, Integer, ForeignKey
+
 
 #init app
 app = Flask("__name__")
@@ -19,6 +21,10 @@ db = SQLAlchemy(app)
 #init ma
 ma = Marshmallow(app)
 
+#create database
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
  #Transaction Class/Model
 class Transaction(db.Model):
@@ -168,6 +174,209 @@ def get_transaction(id):
   return transaction_schema.jsonify(transaction)
 
 
-#Run server
+### STOCK APIs ###
+
+
+
+# Category Table
+class Category(db.Model):
+  categoryId = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  categoryName = db.Column(db.String(20))
+
+
+  def __init__(self, categoryName):
+    self.categoryName = categoryName
+
+#Category schema
+class CategorySchema(ma.Schema):
+    class Meta:
+        fields = ('categoryId', 'categoryName')
+
+# Init schema
+category_schema = CategorySchema()
+categories_schema = CategorySchema(many=True)
+
+# Industry schema
+class Industry(db.Model):
+  industryId = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  industryName = db.Column(db.String(20))
+
+
+  def __init__(self, industryName):
+    self.industryName = industryName
+
+# industryName schema
+class IndustrySchema(ma.Schema):
+    class Meta:
+        fields = ('industryId', 'industryName')
+
+
+# Init schema
+industry_schema = IndustrySchema()
+industries_schema = IndustrySchema(many=True)
+
+
+class Stock(db.Model):
+  id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  stockSymbol = db.Column(db.Integer)
+  # categoryId = db.Column(db.Integer, ForeignKey(Category.categoryId))
+  # industryId = db.Column(db.Integer, ForeignKey(Industry.industryId))
+  category = db.Column(db.String(20))
+  industry = db.Column(db.String(20))
+
+  def __init__(self, stockSymbol, category, industry):
+    #self.stockId = stockId
+    self.stockSymbol = stockSymbol
+    self.category = category
+    self.industry = industry
+
+#Stock schema
+class StockSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'stockSymbol', 'category', 'industry')
+
+# Init schema
+stock_schema = StockSchema()
+stocks_schema = StockSchema(many=True)
+
+
+# Stock Price Table
+class StockPrice(db.Model):
+  stockPriceId = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  stockId = db.Column(db.Integer, ForeignKey(Stock.id))
+  date = db.Column(db.String(20))
+  open = db.Column(db.Float)
+  high = db.Column(db.Float)
+  low = db.Column(db.Float)
+  close = db.Column(db.Float)
+  volume = db.Column(db.Float)
+
+  def __init__(self, stockId, date, open, high, low, close, volume):
+    self.stockId = stockId
+    self.date = date
+    self.open = open
+    self.high = high
+    self.low = low
+    self.close = close
+    self.volume = volume
+
+#Stock schema
+class StockPriceSchema(ma.Schema):
+    class Meta:
+        fields = ('stockPriceId', 'stockId', 'date', 'open', 'high', 'low', 'close', 'volume')
+
+
+# Init schema
+stock_price_schema = StockPriceSchema()
+stocks_price_schema = StockPriceSchema(many=True)
+
+
+# APIs
+
+# Add new stock to stock table
+@app.route('/api/portfolio/addstock', methods=['POST'])
+def add_stock():
+  #stockId = request.json['stockId']
+  stockSymbol = request.json['stockSymbol']
+  category = request.json['category']
+  industry = request.json['industry']
+
+  new_stock = Stock(stockSymbol, category, industry)
+
+  db.session.add(new_stock)
+  db.session.commit()
+
+  return stock_schema.jsonify(new_stock)
+
+# Get all stocks
+@app.route('/api/portfolio/getallstocks', methods=['GET'])
+def get_all_stocks():
+  stocks = Stock.query.all()
+  return jsonify(stocks_schema.dump(stocks))
+
+
+# search stock by Industry or Category
+@app.route('/api/portfolio/searchstock', methods=['POST'])
+def search_stock():
+  categoryId = request.json['category']
+  industryId = request.json['industry']
+
+  # if category is null, search by industry
+  # else if industry is null, search by category
+  # if both are not null, search by both
+  # if both are null, return all stocks
+  if (categoryId != "" or categoryId is not None) and (industryId == "" or industryId is None):
+    stocks = Stock.query.filter(Stock.category == categoryId).all()
+  elif (industryId != "" or industryId is not None) and (categoryId == "" or categoryId is None):
+    stocks = Stock.query.filter(Stock.industry == industryId).all()
+  elif (industryId != "" or industryId is not None) and (categoryId != "" or categoryId is not None):
+    stocks = Stock.query.filter(Stock.industry == industryId and Stock.category == categoryId).all()
+  else:
+    stocks = Stock.query.all()
+  return jsonify(stocks_schema.dump(stocks))
+  
+# Add new stock Price to stock price table
+@app.route('/api/portfolio/addstockprice', methods=['POST'])
+def add_stock_price():
+  stockId = request.json['stockId']
+  date = request.json['date']
+  open = request.json['open']
+  high = request.json['high']
+  low = request.json['low']
+  close = request.json['close']
+  volume = request.json['volume']
+
+  stockPrice = StockPrice(stockId, date, open, high, low, close, volume)
+
+  db.session.add(stockPrice)
+  db.session.commit()
+
+  return stock_price_schema.jsonify(stockPrice)
+
+# Get stock price by stock id
+@app.route('/api/portfolio/getstockprice/<id>', methods=['GET'])
+def get_stockprice_by_id(id):
+  stockprice = StockPrice.query.get(id)
+  return jsonify(stock_price_schema.dump(stockprice))
+
+
+# Get all categories (for search screen dropdown)
+@app.route('/api/portfolio/categories', methods=['GET'])
+def get_categories():
+  categories = Category.query.all()
+  return categories_schema.jsonify(categories)
+
+@app.route('/api/portfolio/addcategory', methods=['POST'])
+def add_category():
+  categoryName = request.json['categoryName']
+
+  category = Category(categoryName)
+
+  db.session.add(category)
+  db.session.commit()
+
+  return category_schema.jsonify(category)
+
+# Get all industries (for search screen dropdown)
+@app.route('/api/portfolio/industries', methods=['GET'])
+def get_industries():
+  industries = Industry.query.all()
+  return industries_schema.jsonify(industries)
+
+@app.route('/api/portfolio/addindustry', methods=['POST'])
+def add_industry():
+  industryName = request.json['industryName']
+
+  industry = Industry(industryName)
+
+  db.session.add(industry)
+  db.session.commit()
+
+  return industry_schema.jsonify(industry)
+
 if __name__=="__main__":
+    if not os.path.exists('db.sqlite'):
+      db.create_all()
+    
     app.run(debug=True)
+    
