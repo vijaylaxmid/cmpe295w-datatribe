@@ -4,3 +4,7 @@
 - pipenv shell
 - pipenv install flask flask-sqlalchemy flask-marshmallow marshmallow-sqlalchemy
 - python app.py
+
+## To reload the db file
+- from app import db
+- db.create_all()
