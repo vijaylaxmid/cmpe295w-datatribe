@@ -49,7 +49,7 @@ const StockList = (props) => {
             <List>
                 {loading ? <Loading></Loading> :
                     stocks.map((stock) => {
-                        return <ListItemLink key={stock.stockTicker}>
+                        return <ListItemLink key={stock.stockTicker} href={`/stock/${stock.stockTicker}`}>
                             <ListItemAvatar>
                                 <Avatar>
                                     <ShowChartIcon />
