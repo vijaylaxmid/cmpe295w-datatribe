@@ -3,6 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import StockList from '../components/StockList';
+import StockGraph from '../components/StockGraph';
+import Newsfeed from '../components/Newsfeed';
+import PredictionsList from '../components/PredictionsList';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -11,15 +14,19 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
-    height: '85vh',
+    height: '87vh',
     display: "flex",
     flexDirection: "column",
   },
+  bottom: {
+    height: '100%',
+  },
   graphContainer: {
-    height: "50%"
+    height: "60%"
   },
   newsContainer: {
-    height: "50%"
+    height: "50%",
+    display: 'flex',
   }
 }));
 
@@ -32,15 +39,16 @@ export default function Dashboard() {
         <Grid item xs={8}>
           <Paper className={classes.paper}>
             <div className={classes.graphContainer}>
-              Graph Container
+              <StockGraph></StockGraph>
             </div>
             <div className={classes.newsContainer}>
-               News Container
+               <Newsfeed></Newsfeed>
+               <PredictionsList/>
             </div>
           </Paper>
         </Grid>
         <Grid item xs={4}>
-          <Paper className={classes.paper}>
+          <Paper className={classes.bottom}>
             <StockList></StockList>
           </Paper>
         </Grid>

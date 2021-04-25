@@ -8,6 +8,8 @@ flask = "*"
 flask-sqlalchemy = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
+yfinance = "*"
+stocknews = "*"
 
 [dev-packages]
 

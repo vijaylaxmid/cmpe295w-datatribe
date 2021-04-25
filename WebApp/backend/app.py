@@ -2,9 +2,12 @@ from flask import (Flask, render_template)
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+import yfinance as yf
 import os
 from sqlalchemy import Table, Column, Integer, ForeignKey
-
+from stocknews import StockNews
+import json
+import requests
 
 #init app
 app = Flask("__name__")
@@ -93,6 +96,50 @@ users_schema = UserSchema(many=True)
 @app.errorhandler(404)
 def page_not_found(error):
     return 'This route does not exist {}'.format(request.url), 404 
+
+@app.route("/api/stock/history")
+def display_history():
+
+    symbol = request.args.get('symbol', default="AAPL")
+    period = request.args.get('period', default="1mo")
+    interval = request.args.get('interval', default="1d")        
+    quote = yf.Ticker(symbol)   
+    hist = quote.history(period=period, interval=interval)
+    data = hist.to_json()
+    return data
+
+@app.route("/api/stock/quote")
+def display_quote():
+  symbol = request.args.get('symbol', default="AAPL")
+
+  quote = yf.Ticker(symbol)
+
+  return quote.info
+
+@app.route("/api/business/news")
+def display_news():
+  url = 'https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=f99745454b5948d3a9f5df38f3780cfc'
+  headers = {'Content-Type': 'application/json'}
+  response = requests.get(url, headers=headers)
+
+  if response.status_code == 200:
+      return json.loads(response.content.decode('utf-8'))
+  else:
+      return None
+
+@app.route("/api/stock/news")
+def display_stock_news():
+  symbol = request.args.get('symbol', default="AAPL")
+  
+  
+  url = 'https://newsapi.org/v2/everything?q='+symbol+'&from=2021-04-24&to=2021-04-24&sortBy=popularity&apiKey=f99745454b5948d3a9f5df38f3780cfc'
+  headers = {'Content-Type': 'application/json'}
+  response = requests.get(url, headers=headers)
+
+  if response.status_code == 200:
+      return json.loads(response.content.decode('utf-8'))
+  else:
+      return None      
 
 # Create user info
 @app.route('/api/user', methods=['POST'])

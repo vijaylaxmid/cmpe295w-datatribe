@@ -12,43 +12,55 @@ import ShowChartIcon from '@material-ui/icons/ShowChart';
 import apiClient from "../libs/apiClient";
 import Loading from './Loading';
 import ErrorSnackbar from './ErrorSnackBar';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
-
+    root: {
+        flexGrow: 1,
+        overflow: 'auto',
+        padding: theme.spacing(0, 3),
+        height: '80%'
+    },
+    paper: {
+        maxWidth: 400,
+        padding: theme.spacing(2),
+        overflow: 'auto',
+        height: '100%'
+    },
 }));
 
 function ListItemLink(props) {
     return <ListItem button component="a" {...props} />;
 }
 
-const StockList = (props) => {
+const PredictionsList = () => {
     const classes = useStyles();
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const stocks = await apiClient('/api/portfolio/user/abc/transactions', { method: "GET" });
-                setStocks(stocks);
-                setLoading(false);
-            } catch (error) {
-                setLoading(false);
-                setError(error);
-            }
+    const predictions = [
+        {
+            stockTicker: 'MSFT',
+            percentage: '2%'
+        },
+        {
+            stockTicker: 'TSLA',
+            percentage: '-2%'
+        },
+        {
+            stockTicker: 'GOOGL',
+            percentage: '1%'
+        },
+        {
+            stockTicker: 'AAPL',
+            percentage: '2%'
         }
-        fetchData();
-        
-        return () => {
-            // cleanup
-        }
-    }, [])
-    const [loading, setLoading] = useState(true);
-    const [stocks, setStocks] = useState([])
-    const [error, setError] = useState(null);
-
+    ]
     return (
-        <div>
+        <div className={classes.root}>
+            <Typography variant="h6" gutterBottom>
+                Predictions
+            </Typography>
             <List>
-                {loading ? <Loading></Loading> :
-                    stocks.map((stock) => {
+                {
+                    predictions.map((stock) => {
                         return <ListItemLink key={stock.stockTicker}>
                             <ListItemAvatar>
                                 <Avatar>
@@ -57,7 +69,7 @@ const StockList = (props) => {
                             </ListItemAvatar>
                             <ListItemText
                                 primary={stock.stockTicker}
-                                secondary={`Shares: ${stock.numberOfStocks} - Amount ${stock.price}`}
+                                secondary={`Change ${stock.percentage}`}
                             />
                             <ListItemSecondaryAction>
                                 <IconButton edge="end" aria-label="delete">
@@ -69,14 +81,8 @@ const StockList = (props) => {
                 }
 
             </List>
-            {error && (
-            <ErrorSnackbar
-                onClose={() => this.setState({ error: null })}
-                message={this.state.error.message}
-            />
-            )}
         </div>
     )
 }
 
-export default StockList;
+export default PredictionsList
