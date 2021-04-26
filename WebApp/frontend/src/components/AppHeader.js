@@ -66,6 +66,9 @@ class AppHeader extends React.Component {
                 <Tabs>
                   <Tab key="dashboard" label="Dashboard" component={Link} className={this.props.classes.tabLink} to="/"></Tab>
                   <Tab key="profile" label="User Profile" component={Link} className={this.props.classes.tabLink} to="/profile"></Tab>
+                  <Tab key="search" label="Search" component={Link} className={this.props.classes.tabLink} to="/search"></Tab>
+                  <Tab key="search" label="History" component={Link} className={this.props.classes.tabLink} to="/history"></Tab>
+
                 </Tabs>
               </>
               : null
