@@ -6,10 +6,6 @@ import Home from "./pages/Home";
 import ProfilePage from "./pages/ProfilePage";
 import StockPage from "./pages/StockPage";
 import Transactions from "./pages/Transactions";
-import ProfilePage from "./pages/ProfilePage";
-import StockPage from "./pages/StockPage";
-import SearchPage from "./pages/SearchPage";
-import TransactionHistory from "./pages/TransactionHistory";
 
 // import config from './app.config';
 // import AppHeader from './components/AppHeader';
