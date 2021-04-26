@@ -17,7 +17,12 @@ import LinkIcon from "@material-ui/icons/Link";
 import ShowChartIcon from "@material-ui/icons/ShowChart";
 import Loading from "./../components/Loading";
 import { DataGrid } from "@material-ui/data-grid";
-import { FormHelperText, FormLabel, FormControlLabel } from "@material-ui/core";
+import {
+  FormHelperText,
+  FormLabel,
+  FormControlLabel,
+  Divider,
+} from "@material-ui/core";
 
 const data = [
   {
@@ -85,6 +90,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     padding: theme.spacing(2),
   },
+  profilestyle: {
+    height: 250,
+    width: "100%",
+    padding: 20,
+    color: theme.palette.text.secondary,
+  },
 }));
 
 const Transactions = () => {
@@ -112,11 +123,14 @@ const Transactions = () => {
   }, []);
   return (
     <div className={classes.root}>
-      <Grid container alignItems="flex-start" spacing={2}>
+      <Grid container alignItems="center" justify="center" spacing={2}>
         <Grid item xs={8}>
           <Paper style={{ padding: 30 }}>
-            <Typography variant="h6">Transaction History</Typography>
-            <div style={{ height: 250, width: "100%", padding: 20 }}>
+            <Typography variant="h4" style={{ padding: 10 }}>
+              Transaction History
+            </Typography>
+            <Divider></Divider>
+            <div className={classes.profilestyle}>
               <DataGrid
                 rows={transactionData}
                 columns={[
