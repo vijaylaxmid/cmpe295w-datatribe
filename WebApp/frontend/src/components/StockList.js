@@ -24,10 +24,28 @@ function ListItemLink(props) {
 const StockList = (props) => {
     const classes = useStyles();
     useEffect(() => {
+        function getTotalStocks(stocks) {
+            return stocks.reduce((total, stock, index, array) => {
+                if (stock.transactionType === "buy") {
+                    total += stock.numberOfStocks
+                } else {
+                    total -= stock.numberOfStocks
+                }
+                return total
+            }, 0)
+        }
         async function fetchData() {
             try {
                 const stocks = await apiClient('/api/portfolio/user/abc/transactions', { method: "GET" });
-                setStocks(stocks);
+                const tickers = [...new Set(stocks.map(item => item.stockTicker))];
+                const result = tickers.map(tick => {
+                    const stockTrans = stocks.filter(st => st.stockTicker === tick);
+                    return {
+                        stockTicker: tick,
+                        numberOfStocks: getTotalStocks(stockTrans)
+                    }
+                })
+                setStocks(result);
                 setLoading(false);
             } catch (error) {
                 setLoading(false);
@@ -57,7 +75,7 @@ const StockList = (props) => {
                             </ListItemAvatar>
                             <ListItemText
                                 primary={stock.stockTicker}
-                                secondary={`Shares: ${stock.numberOfStocks} - Amount ${stock.price}`}
+                                secondary={`Shares: ${stock.numberOfStocks}`}
                             />
                             <ListItemSecondaryAction>
                                 <IconButton edge="end" aria-label="delete">
