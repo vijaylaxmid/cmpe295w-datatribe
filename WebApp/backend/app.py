@@ -8,10 +8,14 @@ from sqlalchemy import Table, Column, Integer, ForeignKey
 from stocknews import StockNews
 import json
 import requests
+from flask_cors import CORS, cross_origin
 
 #init app
 app = Flask("__name__")
 basedir = os.path.abspath(os.path.dirname(__file__))
+
+# CORS
+CORS(app, resources = {r"/*": {"origins": "*"}})
 
 #Database
 
@@ -389,6 +393,7 @@ def get_stockprice_by_id(id):
 
 # Get all categories (for search screen dropdown)
 @app.route('/api/portfolio/categories', methods=['GET'])
+@cross_origin()
 def get_categories():
   categories = Category.query.all()
   return categories_schema.jsonify(categories)
