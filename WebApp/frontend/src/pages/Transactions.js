@@ -5,18 +5,12 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import apiClient from "../libs/apiClient";
 import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
-import StockLineGraph from "../components/StockLineGraph";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ListItemText from "@material-ui/core/ListItemText";
-import IconButton from "@material-ui/core/IconButton";
-import LinkIcon from "@material-ui/icons/Link";
-import ShowChartIcon from "@material-ui/icons/ShowChart";
-import Loading from "./../components/Loading";
-import { DataGrid } from "@material-ui/data-grid";
+
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarExport,
+} from "@material-ui/data-grid";
 import {
   FormHelperText,
   FormLabel,
@@ -24,6 +18,13 @@ import {
   Divider,
 } from "@material-ui/core";
 
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+}
 const data = [
   {
     id: 1,
@@ -91,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
   },
   profilestyle: {
-    height: 250,
+    height: 300,
     width: "100%",
     padding: 20,
     color: theme.palette.text.secondary,
@@ -150,6 +151,15 @@ const Transactions = () => {
                   { field: "mode", width: 200, headerName: "Mode" },
                 ]}
                 pageSize={6}
+                components={{
+                  Toolbar: CustomToolbar,
+                }}
+                sortModel={[
+                  {
+                    field: "date",
+                    sort: "asc",
+                  },
+                ]}
               />
             </div>
           </Paper>
