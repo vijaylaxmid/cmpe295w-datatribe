@@ -6,11 +6,10 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import '../common.css';
 
-class SearchGrid extends Component {
+class SearchBar extends Component {
 
     constructor() {
         super();
@@ -74,11 +73,11 @@ class SearchGrid extends Component {
     }
 
     // handle event for cell click - redirect to stock view page with ticker symbol
-    onCellClick(symbol) {
+    // onCellClick(symbol) {
 
-        //href={`/stock/${stock.stockTicker}`
+    //     //href={`/stock/${stock.stockTicker}`
 
-      }
+    //   }
 
     render(){
         return(
@@ -100,7 +99,7 @@ class SearchGrid extends Component {
                     <TableBody>
                         {
                             this.state.gridData.map((row) => (
-                                <TableRow onCellClick={this.handleCellClick}>
+                                <TableRow>
                                     <TableCell align="left">{row.symbol}</TableCell>
                                     <TableCell align="left">{row.name}</TableCell>
                                     <TableCell align="left">
@@ -121,4 +120,4 @@ class SearchGrid extends Component {
         )
     }
 }
-export default SearchGrid;
+export default SearchBar;

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import SearchGrid from '../components/SearchGrid';
 import SearchBar from '../components/SearchBar';
 
 import {

@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import ProfilePage from "./pages/ProfilePage";
 import StockPage from "./pages/StockPage";
 import Transactions from "./pages/Transactions";
+import Search from "./pages/SearchPage";
 
 // import config from './app.config';
 // import AppHeader from './components/AppHeader';
@@ -17,6 +18,7 @@ const AppWithRouterAccess = () => {
       <SecureRoute path="/stock/:id" component={StockPage} />
       <SecureRoute path="/profile" component={ProfilePage} />
       <SecureRoute path="/transactions" component={Transactions} />
+      <SecureRoute path="/search" component={Search} />
       <Route path="/login/callback" component={LoginCallback} />
     </>
   );
