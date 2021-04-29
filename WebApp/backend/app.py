@@ -9,10 +9,16 @@ from stocknews import StockNews
 import json
 import requests
 from flask_cors import CORS, cross_origin
+from TradeAPI import internalTradeApi
+
 
 #init app
 app = Flask("__name__")
 basedir = os.path.abspath(os.path.dirname(__file__))
+
+
+# register blueprint
+app.register_blueprint(internalTradeApi)
 
 # CORS
 CORS(app, resources = {r"/*": {"origins": "*"}})
