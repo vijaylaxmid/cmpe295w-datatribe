@@ -24,6 +24,7 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { useHistory } from "react-router-dom";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -123,6 +124,8 @@ const StockPage = () => {
     const [error, setError] = useState(null);
     const [stockInfo, setStockInfo] = useState({});
     const [shares, setShares] = useState(0);
+    const [sharestoBuyOrSell, setSharestoBuyOrSell] = useState(0);
+    let history = useHistory();
 
     useEffect(() => {
         async function fetchData() {
@@ -156,6 +159,28 @@ const StockPage = () => {
             // cleanup
         }
     }, [])
+
+    const handleBuyOrSellChange = (event) => {
+        setSharestoBuyOrSell(event.target.value);
+    };
+
+    const performBuyOrSell = (transactionType) => {
+        apiClient('/api/portfolio/transaction', {
+            method: 'POST',
+            body: JSON.stringify({
+                date: new Date().toDateString(),
+                mode: "manual",
+                numberOfStocks: sharestoBuyOrSell,
+                price: 0,
+                stockTicker: id,
+                transactionType: transactionType,
+                user: "abc"
+            })
+        }).then(() => {
+            history.push('/')
+        })
+    }
+
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
@@ -236,17 +261,16 @@ const StockPage = () => {
                                 </AppBar>
                                 <TabPanel value={value} index={0} className={classes.tabBody}>
                                     <Paper className={classes.innerBuySell}>
-
-                                        <TextField id="outlined-basic" label="Number Of Shares To Buy" variant="outlined" />
-                                        <Typography variant="body">{`Amount (USD)`}</Typography>
-                                        <Button variant="contained">Buy</Button>
+                                        <TextField id="outlined-basic" label="Number Of Shares To Buy" value={sharestoBuyOrSell} onChange={handleBuyOrSellChange} variant="outlined" />
+                                        <Typography variant="caption">{`An amount (USD) ${sharestoBuyOrSell * stockInfo.regularMarketPreviousClose} will be deducted from your account`}</Typography>
+                                        <Button variant="contained" onClick={() => performBuyOrSell("buy")}>Buy</Button>
                                     </Paper>
                                 </TabPanel>
-                                <TabPanel value={value} index={1}  className={classes.tabBody}>
+                                <TabPanel value={value} index={1} className={classes.tabBody}>
                                     <Paper className={classes.innerBuySell}>
-                                        <TextField id="outlined-basic" label="Number Of Shares to Sell" variant="outlined" />
-                                        <Typography variant="body">{`Amount (USD)`}</Typography>
-                                        <Button variant="contained">Sell</Button>
+                                        <TextField id="outlined-basic" label="Number Of Shares to Sell" value={sharestoBuyOrSell} onChange={handleBuyOrSellChange} variant="outlined" />
+                                        <Typography variant="caption">{`An amount (USD) ${sharestoBuyOrSell * stockInfo.regularMarketPreviousClose} will be added to your account`}</Typography>
+                                        <Button variant="contained" onClick={() => performBuyOrSell("sell")}>Sell</Button>
                                     </Paper>
                                 </TabPanel>
                             </Paper>

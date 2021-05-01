@@ -20,22 +20,35 @@ const StockLineGraph = (props) => {
 
     useEffect(() => {
         async function fetchData() {
-            const stocks = await apiClient(`/api/stock/history?symbol=${props.stockTicker}`, { method: "GET" });
+            const stocks = await apiClient(`/api/stock/predictions?symbol=${props.stockTicker}`, { method: "GET" });
             const trend = {
-                labels: stocks.Close ? Object.keys(stocks.Close).map(item => {
-                    const dateString = new Date(Number(item)).toLocaleDateString();
-                    return dateString
-                }) : [],
+                labels: stocks ? Object.keys(stocks).slice(-60) : [],
                 datasets: [
                     {
-                        label: 'Close',
+                        label: 'Actual',
                         fill: false,
                         backgroundColor: 'rgba(75,192,192,1)',
                         // borderColor: 'rgba(0,0,0,1)',
                         borderWidth: 2,
-                        data: Object.values(stocks.Close)
+                        data: Object.values(stocks).map((d) => {
+                            return d.true_adj_close_1_days
+                        }).slice(-60).slice(0, -1)
                     },
-                ]
+                    {
+                        label: 'Prediction',
+                        fill: false,
+                        backgroundColor: '#FF7F50',
+                        // borderColor: 'rgba(0,0,0,1)',
+                        borderWidth: 2,
+                        data: Object.values(stocks).map((d) => {
+                            return d.adj_close_1_days
+                        }).slice(-60)
+                    },
+                    
+                ],
+                options: {
+                    spanGaps: true,
+                }
             }
             setTrend(trend);
         }

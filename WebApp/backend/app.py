@@ -7,10 +7,12 @@ import os
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from stocknews import StockNews
 import json
+import csv
 import requests
 from flask_cors import CORS, cross_origin
 from TradeAPI import internalTradeApi
-
+import os.path
+from os import path
 
 #init app
 app = Flask("__name__")
@@ -106,6 +108,26 @@ users_schema = UserSchema(many=True)
 @app.errorhandler(404)
 def page_not_found(error):
     return 'This route does not exist {}'.format(request.url), 404 
+
+@app.route("/api/stock/predictions")
+def display_predictions():
+
+    symbol = request.args.get('symbol', default="AAPL")
+    filepath = os.path.join(basedir, "data", "Predictions", symbol+".csv") # More than 2 params allowed.
+    # create a dictionary
+    data = {}
+    if path.isfile(filepath):
+      # Open a csv reader called DictReader
+      with open(filepath, encoding='utf-8') as csvf:
+          csvReader = csv.DictReader(csvf)
+          
+          # Convert each row into a dictionary
+          # and add it to data
+          for rows in csvReader:
+              key = rows['date']
+              data[key] = rows
+    res = json.dumps(data, indent = 4)
+    return res
 
 @app.route("/api/stock/history")
 def display_history():
