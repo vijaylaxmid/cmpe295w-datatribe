@@ -27,13 +27,13 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         overflow: 'hidden',
         padding: theme.spacing(0, 3),
-        height: '80%'
+        height: '80%',
     },
     paper: {
-        maxWidth: 600,
         padding: theme.spacing(2),
         overflow: 'auto',
-        height: '100%'
+        height: '100%',
+        fontSize: 12
     },
 }));
 const Newsfeed = () => {
@@ -63,21 +63,18 @@ const Newsfeed = () => {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <Typography variant="h6" gutterBottom>
-                    News
-                </Typography>
                 <List>
                     {loading ? <Loading></Loading> :
                         news.map((n, index) => {
                             return <ListItemLink key={index} href={n.url}>
                                 <ListItemAvatar>
                                     <Avatar>
-                                        W
+                                        N
                                 </Avatar>
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary={n.title}
-                                // econdary={`Shares: ${stock.numberOfStocks} - Amount ${stock.price}`}
+                                    //primary={n.title}
+                                    secondary={n.title}
                                 />
                                 <ListItemSecondaryAction>
                                     <IconButton edge="end" aria-label="delete">

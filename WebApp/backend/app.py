@@ -129,6 +129,35 @@ def display_predictions():
     res = json.dumps(data, indent = 4)
     return res
 
+@app.route("/api/stock/predictions/all")
+def display_all_predictions():
+
+    filepath = os.path.join(basedir, "data", "Predictions") 
+    path, dirs, files = next(os.walk(filepath))
+    file_count = len(files)
+    # create a dictionary
+    data = {}
+
+    # append datasets to the list 
+    for i in range(file_count):
+        csv_filepath = os.path.join(filepath, files[i]) 
+        tick = os.path.splitext(files[i])[0]
+        # Open a csv reader called DictReader
+        with open(csv_filepath, encoding='utf-8') as csvf:
+            # final_lines = csvf.readlines()[-2:]
+            # # key = rows['date']
+            # 
+            _rows = []
+            csvReader = csv.DictReader(csvf)
+            # Convert each row into a dictionary
+            # and add it to data
+            for rows in csvReader:
+                _rows.append(rows)
+            data[tick] = _rows[-2:]
+
+    res = json.dumps(data, indent = 4)
+    return res
+
 @app.route("/api/stock/history")
 def display_history():
 

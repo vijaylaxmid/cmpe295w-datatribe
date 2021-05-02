@@ -6,6 +6,7 @@ import StockList from '../components/StockList';
 import StockGraph from '../components/StockGraph';
 import Newsfeed from '../components/Newsfeed';
 import PredictionsList from '../components/PredictionsList';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,6 +28,12 @@ const useStyles = makeStyles((theme) => ({
   newsContainer: {
     height: "50%",
     display: 'flex',
+  },
+  predictions: {
+    width: "60%"
+  },
+  news: {
+    width: "40%"
   }
 }));
 
@@ -42,8 +49,20 @@ export default function Dashboard() {
               <StockGraph></StockGraph>
             </div>
             <div className={classes.newsContainer}>
-               <Newsfeed></Newsfeed>
-               <PredictionsList/>
+              <div className={classes.predictions}>
+                <Typography variant="button" gutterBottom>
+                  Predictions
+                </Typography>
+
+                <PredictionsList />
+              </div>
+              <div className={classes.news}>
+                <Typography variant="button" gutterBottom>
+                  News
+                </Typography>
+
+                <Newsfeed></Newsfeed>
+              </div>
             </div>
           </Paper>
         </Grid>

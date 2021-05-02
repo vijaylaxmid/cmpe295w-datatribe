@@ -69,7 +69,7 @@ function nFormatter(num) {
     if (num >= 1000) {
         return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
     }
-    return num;
+    return Number(num).toFixed(2);
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -110,7 +110,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
     },
     newsGrid: {
-        height: "100%",
+        height: "90%",
         overflow: 'auto'
     }
 }));
@@ -206,51 +206,10 @@ const StockPage = () => {
                                             <ShowChartIcon />
                                         </Avatar>
                                     </ListItemAvatar>
-                                    <ListItemText primary='Value' secondary={nFormatter(shares * stockInfo.regularMarketPreviousClose)} />
+                                    <ListItemText primary='Current Value' secondary={`USD ${nFormatter(shares * stockInfo.regularMarketPreviousClose)}`} />
                                 </ListItem>
                                 <Divider />
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <ShowChartIcon />
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary='High' secondary={stockInfo.dayHigh} />
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <ShowChartIcon />
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary='Low' secondary={stockInfo.dayLow} />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <ShowChartIcon />
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary='Volume' secondary={nFormatter(stockInfo.volume)} />
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <ShowChartIcon />
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary='MarketCap' secondary={nFormatter(stockInfo.marketCap)} />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <ShowChartIcon />
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary='Type' secondary={stockInfo.quoteType} />
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <ShowChartIcon />
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary='P/E' secondary={nFormatter(stockInfo.trailingPE)} />
-                                </ListItem>
+
                             </List>
                             <Paper className={classes.buySell}>
                                 <AppBar position="static">
@@ -262,14 +221,14 @@ const StockPage = () => {
                                 <TabPanel value={value} index={0} className={classes.tabBody}>
                                     <Paper className={classes.innerBuySell}>
                                         <TextField id="outlined-basic" label="Number Of Shares To Buy" value={sharestoBuyOrSell} onChange={handleBuyOrSellChange} variant="outlined" />
-                                        <Typography variant="caption">{`An amount (USD) ${sharestoBuyOrSell * stockInfo.regularMarketPreviousClose} will be deducted from your account`}</Typography>
+                                        <Typography variant="caption">{`An amount (USD) ${Number(sharestoBuyOrSell * stockInfo.regularMarketPreviousClose).toFixed(2)} will be deducted from your account`}</Typography>
                                         <Button variant="contained" onClick={() => performBuyOrSell("buy")}>Buy</Button>
                                     </Paper>
                                 </TabPanel>
                                 <TabPanel value={value} index={1} className={classes.tabBody}>
                                     <Paper className={classes.innerBuySell}>
                                         <TextField id="outlined-basic" label="Number Of Shares to Sell" value={sharestoBuyOrSell} onChange={handleBuyOrSellChange} variant="outlined" />
-                                        <Typography variant="caption">{`An amount (USD) ${sharestoBuyOrSell * stockInfo.regularMarketPreviousClose} will be added to your account`}</Typography>
+                                        <Typography variant="caption">{`An amount (USD) ${Number(sharestoBuyOrSell * stockInfo.regularMarketPreviousClose).toFixed(2)} will be added to your account`}</Typography>
                                         <Button variant="contained" onClick={() => performBuyOrSell("sell")}>Sell</Button>
                                     </Paper>
                                 </TabPanel>
@@ -283,7 +242,57 @@ const StockPage = () => {
                             </div>
                             <div className={classes.newsContainer}>
                                 <Grid container spacing={3} >
-                                    <Grid item xs={8} className={classes.newsGrid}>
+
+                                    <Grid item xs={6} className={classes.newsGrid}>
+                                        <Typography variant="button">Stock Details</Typography>
+                                        <List>
+                                            <ListItem>
+                                                <ListItemAvatar>
+                                                    <Avatar>
+                                                        <ShowChartIcon />
+                                                    </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText primary='High' secondary={stockInfo.dayHigh} />
+                                                <ListItemAvatar>
+                                                    <Avatar>
+                                                        <ShowChartIcon />
+                                                    </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText primary='Low' secondary={stockInfo.dayLow} />
+                                            </ListItem>
+                                            <ListItem>
+                                                <ListItemAvatar>
+                                                    <Avatar>
+                                                        <ShowChartIcon />
+                                                    </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText primary='Volume' secondary={nFormatter(stockInfo.volume)} />
+                                                <ListItemAvatar>
+                                                    <Avatar>
+                                                        <ShowChartIcon />
+                                                    </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText primary='MarketCap' secondary={nFormatter(stockInfo.marketCap)} />
+                                            </ListItem>
+                                            <ListItem>
+                                                <ListItemAvatar>
+                                                    <Avatar>
+                                                        <ShowChartIcon />
+                                                    </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText primary='Type' secondary={stockInfo.quoteType} />
+                                                <ListItemAvatar>
+                                                    <Avatar>
+                                                        <ShowChartIcon />
+                                                    </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText primary='P/E' secondary={nFormatter(stockInfo.trailingPE)} />
+                                            </ListItem>
+                                        </List>
+                                    </Grid>
+                                    <Grid item xs={5} className={classes.newsGrid}>
+                                        <Typography variant="button">News</Typography>
+
                                         <List>
                                             {loading ? <Loading></Loading> :
                                                 news.map((n, index) => {
@@ -294,7 +303,7 @@ const StockPage = () => {
                                                             </Avatar>
                                                         </ListItemAvatar>
                                                         <ListItemText
-                                                            primary={n.title}
+                                                            secondary={n.title}
                                                         // econdary={`Shares: ${stock.numberOfStocks} - Amount ${stock.price}`}
                                                         />
                                                         <ListItemSecondaryAction>
@@ -307,9 +316,7 @@ const StockPage = () => {
                                             }
                                         </List>
                                     </Grid>
-                                    <Grid item xs={4} className={classes.newsGrid}>
-                                        <Typography variant="h6">Predictions</Typography>
-                                    </Grid>
+
                                 </Grid>
                             </div>
                         </Paper>
