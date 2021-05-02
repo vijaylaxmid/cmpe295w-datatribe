@@ -25,6 +25,12 @@ import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useHistory } from "react-router-dom";
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import { green, red } from '@material-ui/core/colors';
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -112,7 +118,26 @@ const useStyles = makeStyles((theme) => ({
     newsGrid: {
         height: "90%",
         overflow: 'auto'
-    }
+    },
+    bullet: {
+        display: 'inline-block',
+        margin: '0 2px',
+        transform: 'scale(0.8)',
+    },
+    title: {
+        fontSize: 14,
+    },
+    pos: {
+        marginBottom: 5,
+    },
+    red: {
+        color: '#fff',
+        backgroundColor: red[500],
+    },
+    green: {
+        color: '#fff',
+        backgroundColor: green[500],
+    },
 }));
 
 
@@ -132,6 +157,7 @@ const StockPage = () => {
             try {
                 const news = await apiClient(`/api/stock/news?symbol=${id}`, { method: "GET" });
                 const info = await apiClient(`/api/stock/quote?symbol=${id}`, { method: "GET" });
+                const predictions = await apiClient('/api/stock/predictions/all', { method: "GET" });
                 const stocks = await apiClient('/api/portfolio/user/abc/transactions', { method: "GET" });
                 const stockTrans = stocks.filter(st => st.stockTicker === id);
                 const totalShares = stockTrans.reduce((total, stock, index, array) => {
@@ -145,6 +171,7 @@ const StockPage = () => {
 
                 setShares(totalShares);
                 setNews(news.articles);
+                setPredictions(predictions);
                 setStockInfo(info);
                 setLoading(false);
             } catch (error) {
@@ -182,7 +209,10 @@ const StockPage = () => {
     }
 
     const [value, setValue] = React.useState(0);
-
+    const [predictions, setPredictions] = useState({})
+    const prevDay = predictions && Array.isArray(predictions[id]) ? predictions[id][0] : {};
+    const nextDay = predictions && Array.isArray(predictions[id]) ? predictions[id][1] : {};
+    const percentage = ((Number(nextDay.adj_close_1_days) - Number(prevDay.adj_close_1_days)) / Number(prevDay.adj_close_1_days) * 100).toFixed(2);
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -209,7 +239,41 @@ const StockPage = () => {
                                     <ListItemText primary='Current Value' secondary={`USD ${nFormatter(shares * stockInfo.regularMarketPreviousClose)}`} />
                                 </ListItem>
                                 <Divider />
+                                <Card className={classes.root}>
+                                    <CardContent>
 
+                                        <Typography className={classes.title} color="textSecondary" gutterBottom>
+                                            Prediction
+                                        </Typography>
+                                        <Grid container>
+                                            <Grid item xs={6}>
+                                                <Avatar className={percentage < 0 ? classes.red : classes.green}>
+                                                    {percentage < 0 ? <TrendingDownIcon /> : <TrendingUpIcon />}
+                                                </Avatar>
+                                                <Typography variant="h4" display="inline">
+                                                    {`${Math.abs(percentage)}%`}
+                                                </Typography>
+                                                <Typography className={classes.pos} color="textSecondary">
+                                                    {percentage > 0 ? "Trending up" : "Trending down"}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Typography className={classes.title} color="textSecondary" gutterBottom>
+                                                    Trend
+                                                </Typography>
+                                                <Typography className={classes.pos} color="textSecondary">
+                                                    {`Expected to reach USD ${Number(nextDay.adj_close_1_days).toFixed(2)}`}
+                                                </Typography>
+                                                <Typography variant="caption">
+                                                    {`As of ${nextDay.date}`}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button size="small">Learn More</Button>
+                                    </CardActions>
+                                </Card>
                             </List>
                             <Paper className={classes.buySell}>
                                 <AppBar position="static">

@@ -75,7 +75,7 @@ const PredictionsList = () => {
                         const prevDay = predictions ? predictions[key][0] : {};
                         const nextDay = predictions ? predictions[key][1] : {};
                         const percentage = ((Number(nextDay.adj_close_1_days) - Number(prevDay.adj_close_1_days)) / Number(prevDay.adj_close_1_days) * 100).toFixed(2);
-                        return <ListItemLink key={key}>
+                        return <ListItemLink key={key} href={`/stock/${key}`}>
                             <ListItemAvatar>
                                 <Avatar className={percentage < 0 ? classes.red : classes.green}>
                                     {percentage < 0 ? <TrendingDownIcon /> : <TrendingUpIcon />}
