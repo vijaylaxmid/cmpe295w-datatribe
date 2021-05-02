@@ -74,6 +74,13 @@ class AppHeader extends React.Component {
                   to="/"
                 ></Tab>
                 <Tab
+                  key="papertrade"
+                  label="Paper Trade"
+                  component={Link}
+                  className={this.props.classes.tabLink}
+                  to="/papertrade"
+                ></Tab>
+                <Tab
                   key="search"
                   label="Search"
                   component={Link}

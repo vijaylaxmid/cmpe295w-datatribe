@@ -79,16 +79,16 @@ def get_account_details():
 @internalTradeApi.route('/getAllPositions', methods=['GET'])
 def get_all_positions():
     portfolio = api.list_positions()
-    result = portfolioSchema.dump(portfolio, many=True)
-    return jsonify(result)
+    # result = portfolioSchema.dump(portfolio, many=True)
+    return json.dumps(portfolio, default=dumper, indent=1)
 
 # Get positions by ticker symbol
 @internalTradeApi.route('/getPositionBySymbol', methods=['POST'])
 def get_position_by_symbol():
     symbol = request.json['symbol']
     position = api.get_position(symbol)
-    result = portfolioSchema.dump(position)
-    return jsonify(result)
+    # result = portfolioSchema.dump(position)
+    return json.dumps(position, default=dumper, indent=1)
 
 
 # place buy or sell order on alpaca

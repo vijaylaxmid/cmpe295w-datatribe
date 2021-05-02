@@ -7,6 +7,7 @@ import ProfilePage from "./pages/ProfilePage";
 import StockPage from "./pages/StockPage";
 import Transactions from "./pages/Transactions";
 import Search from "./pages/SearchPage";
+import PaperTrade from "./pages/PaperTrade";
 
 // import config from './app.config';
 // import AppHeader from './components/AppHeader';
@@ -19,6 +20,7 @@ const AppWithRouterAccess = () => {
       <SecureRoute path="/profile" component={ProfilePage} />
       <SecureRoute path="/transactions" component={Transactions} />
       <SecureRoute path="/search" component={Search} />
+      <SecureRoute path="/papertrade" component={PaperTrade} />
       <Route path="/login/callback" component={LoginCallback} />
     </>
   );
