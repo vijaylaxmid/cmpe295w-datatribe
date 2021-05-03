@@ -61,7 +61,7 @@ class AppHeader extends React.Component {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" color="inherit">
-            Stock Trading Application
+            Stock Prediction and Trading Application
           </Typography>
           {this.state.authenticated ? (
             <>
