@@ -24,6 +24,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
+import { AddAlert } from '@material-ui/icons';
 
 
 function TabPanel(props) {
@@ -79,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         padding: theme.spacing(2),
         color: theme.palette.text.secondary,
-        height: '87vh',
+        // height   : '87vh',
         display: "flex",
         flexDirection: "column",
     },
@@ -121,7 +122,7 @@ const PaperTrade = () => {
     const [positions, setPositions] = useState({});
     const [orders, setOrders] = useState(0);
     const [sharestoBuyOrSell, setSharestoBuyOrSell] = useState(0);
-    const [tickerSymbol, setTickerSymbol] = useState(0);
+    const [tickerSymbol, setTickerSymbol] = useState();
     const [timeToForce, setTimeToForce] = useState(0);
     let history = useHistory();
 
@@ -163,20 +164,38 @@ const PaperTrade = () => {
     };
 
     const performBuyOrSell = (transactionType) => {
-        apiClient('/api/trade/submitOrders ', {
-            method: 'POST',
-            body: JSON.stringify({
-                symbol: tickerSymbol,
-                quantity: sharestoBuyOrSell,
-                side: transactionType,
-                type: "market",
-                timeInForce: "gtc"
-            })
-        }).then(() => {
-            alert("order submitted")
-            history.push('/')
-            window.location.reload();
-        })
+        async function submit(transactionType) {
+            try {
+                let result = await apiClient('/api/trade/submitOrders ', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        symbol: tickerSymbol,
+                        quantity: sharestoBuyOrSell,
+                        side: transactionType,
+                        type: "market",
+                        timeInForce: "gtc"
+                    })
+                })
+                debugger
+                if (result.status === "order placed"){
+                    alert("order placed")
+                    window.location.reload();
+                }
+                else{
+                    alert("order denied");
+                    window.location.reload();
+                }
+            } catch (error) {
+                alert("something went wrong")
+            }
+        } 
+        // .then(() => {
+        //     debugger
+        //     alert("order submitted")
+        //     history.push('/')
+        //     window.location.reload();
+        // })
+        submit(transactionType);
     }
 
     const [value, setValue] = React.useState(0);
@@ -205,14 +224,41 @@ const PaperTrade = () => {
     return (
         <div className={classes.root}>
             { loading ? <Loading></Loading> :
-                <Grid container>
+                <Grid>
                     <Grid>
-                                <Paper elevation={0}> 
-                                    <Typography variant="h6"> Account Details </Typography>
-                                    <p>{`${account.equity} Equity `}</p>
-                                    <p>{`${account.buying_power} Buying Power`}</p>
+                                <Paper className={classes.paper}>  
+                                    <Typography variant="h5"> Account Details </Typography>
+                                    <b>{` $ ${account.equity} Equity `}</b>
+                                    <b>{`$ ${account.buying_power} Buying Power`}</b>
                                 </Paper>
-                                <Paper>
+                                <Paper className={classes.paper}>
+                                    <Paper className={classes.buySell}>
+                                        <AppBar position="static">
+                                            <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+                                                <Tab label="Buy" {...a11yProps(0)} />
+                                                <Tab label="Sell" {...a11yProps(1)} />
+                                            </Tabs>
+                                        </AppBar>
+                                        <TabPanel value={value} index={0} className={classes.tabBody}>
+                                            <Paper className={classes.innerBuySell}>
+                                                <TextField id="outlined-basic" label="Symbol" value={tickerSymbol} onChange={handleTickerSymbolChange} variant="outlined" />
+                                                <TextField id="outlined-basic" label="Number Of Shares To Buy" value={sharestoBuyOrSell} onChange={handleBuyOrSellChange} variant="outlined" />
+                                                {/* <TextField id="outlined-basic" label="Number Of Shares To Buy" value={sharestoBuyOrSell} onChange={handleBuyOrSellChange} variant="outlined" /> */}
+                                                <Button variant="contained" onClick={() => performBuyOrSell("buy")}>Buy</Button>
+                                            </Paper>
+                                        </TabPanel>
+                                        <TabPanel value={value} index={1} className={classes.tabBody}>
+                                            <Paper className={classes.innerBuySell}>
+                                                <TextField id="outlined-basic" label="Symbol" value={tickerSymbol} onChange={handleTickerSymbolChange} variant="outlined" />
+                                                <TextField id="outlined-basic" label="Number Of Shares to Sell" value={sharestoBuyOrSell} onChange={handleBuyOrSellChange} variant="outlined" />
+    
+                                                <Button variant="contained" onClick={() => performBuyOrSell("sell")}>Sell</Button>
+                                            </Paper>
+                                        </TabPanel>
+                                    </Paper>
+                                </Paper>
+                                
+                                <Paper className={classes.paper}>
                                     <TableContainer component={Paper}>
                                         <Typography variant="h6"> Portfolio </Typography>
                                         <Table aria-label="simple table">
@@ -242,7 +288,7 @@ const PaperTrade = () => {
                                         </Table>
                                     </TableContainer>
                                 </Paper>
-                                <Paper>
+                                <Paper className={classes.paper}>
                                     <TableContainer component={Paper}>
                                         <Typography variant="h6"> Order History </Typography>
                                         <Table aria-label="simple table">
@@ -273,33 +319,6 @@ const PaperTrade = () => {
                                         </Table>
                                     </TableContainer>
                                 </Paper>
-                            <Paper elevation={3}>
-                                <Paper className={classes.buySell}>
-                                    <AppBar position="static">
-                                        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-                                            <Tab label="Buy" {...a11yProps(0)} />
-                                            <Tab label="Sell" {...a11yProps(1)} />
-                                        </Tabs>
-                                    </AppBar>
-                                    <TabPanel value={value} index={0} className={classes.tabBody}>
-                                        <Paper className={classes.innerBuySell}>
-                                            <TextField id="outlined-basic" label="Symbol" value={tickerSymbol} onChange={handleTickerSymbolChange} variant="outlined" />
-                                            <TextField id="outlined-basic" label="Number Of Shares To Buy" value={sharestoBuyOrSell} onChange={handleBuyOrSellChange} variant="outlined" />
-                                            {/* <TextField id="outlined-basic" label="Number Of Shares To Buy" value={sharestoBuyOrSell} onChange={handleBuyOrSellChange} variant="outlined" /> */}
-                                            <Button variant="contained" onClick={() => performBuyOrSell("buy")}>Buy</Button>
-                                        </Paper>
-                                    </TabPanel>
-                                    <TabPanel value={value} index={1} className={classes.tabBody}>
-                                        <Paper className={classes.innerBuySell}>
-                                            <TextField id="outlined-basic" label="Symbol" value={tickerSymbol} onChange={handleTickerSymbolChange} variant="outlined" />
-                                            <TextField id="outlined-basic" label="Number Of Shares to Sell" value={sharestoBuyOrSell} onChange={handleBuyOrSellChange} variant="outlined" />
-                                            
-                                            <Button variant="contained" onClick={() => performBuyOrSell("sell")}>Sell</Button>
-                                        </Paper>
-                                    </TabPanel>
-                                </Paper>
-                            </Paper>
-
                     </Grid>
 
                 </Grid>

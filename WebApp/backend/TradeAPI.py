@@ -110,10 +110,17 @@ def submit_orders():
             type= type,
             time_in_force=timeInForce
             )
-        
-        return "order placed"
+    
+        result = {
+            "status": "order placed"
+        } 
+        return jsonify(result)
     except Exception:
-        return Exception
+        result = {
+            "status": "error",
+            "error": Exception
+        }
+        return jsonify(result)
 
     # # Get position after sale
     # position = api.get_position(symbol)
