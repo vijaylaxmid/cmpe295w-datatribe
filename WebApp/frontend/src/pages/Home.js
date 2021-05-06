@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
-    height: '87vh',
+    height: '94vh',
     display: "flex",
     flexDirection: "column",
   },
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
   },
   graphContainer: {
-    height: "60%"
+    height: "50%"
   },
   newsContainer: {
     height: "50%",
@@ -50,17 +50,9 @@ export default function Dashboard() {
             </div>
             <div className={classes.newsContainer}>
               <div className={classes.predictions}>
-                <Typography variant="button" gutterBottom>
-                  Predictions
-                </Typography>
-
                 <PredictionsList />
               </div>
               <div className={classes.news}>
-                <Typography variant="button" gutterBottom>
-                  News
-                </Typography>
-
                 <Newsfeed></Newsfeed>
               </div>
             </div>
