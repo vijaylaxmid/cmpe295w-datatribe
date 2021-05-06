@@ -15,6 +15,11 @@ import ErrorSnackbar from './ErrorSnackBar';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 import { green, red } from '@material-ui/core/colors';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import MenuIcon from '@material-ui/icons/Menu';
 
 const useStyles = makeStyles((theme) => ({
     red: {
@@ -25,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
         color: '#fff',
         backgroundColor: green[500],
     },
+    appBar: {
+        backgroundColor: "#03a9f4        ",
+    }
 }));
 
 function ListItemLink(props) {
@@ -77,6 +85,21 @@ const StockList = (props) => {
 
     return (
         <div>
+            <AppBar position="static" className={classes.appBar}>
+                <Toolbar>
+                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                        <MenuIcon />
+                    </IconButton>
+                    <ListItemText
+                        primary="USD 10K"
+                        secondary="Buying Power"
+                    />
+                    <ListItemText
+                        primary="USD 135K"
+                        secondary="Current Value"
+                    />
+                </Toolbar>
+            </AppBar>
             <List>
                 {loading ? <Loading></Loading> :
                     stocks.map((stock) => {
@@ -86,7 +109,7 @@ const StockList = (props) => {
                         return <ListItemLink key={stock.stockTicker} href={`/stock/${stock.stockTicker}`}>
                             <ListItemAvatar>
                                 <Avatar className={percentage < 0 ? classes.red : classes.green}>
-                                        {percentage < 0 ? <TrendingDownIcon /> : <TrendingUpIcon />}
+                                    {percentage < 0 ? <TrendingDownIcon /> : <TrendingUpIcon />}
                                 </Avatar>
                             </ListItemAvatar>
                             <ListItemText
