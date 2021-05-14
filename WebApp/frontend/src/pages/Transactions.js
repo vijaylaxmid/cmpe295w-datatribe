@@ -108,7 +108,7 @@ const Transactions = () => {
     async function fetchData() {
       try {
         const transactiondata = await apiClient(
-          `/api/portfolio/user/sushrut/transactions`,
+          `/api/portfolio/user/abc/transactions`,
           {
             method: "GET",
           }

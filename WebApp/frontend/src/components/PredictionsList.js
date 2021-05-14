@@ -52,7 +52,7 @@ function a11yProps(index) {
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
-        height: "90%"
+        height: "95%"
     },
     predictions: {
         height: '95%',

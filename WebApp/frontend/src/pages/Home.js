@@ -13,9 +13,9 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   paper: {
-    padding: theme.spacing(2),
+    padding: "10px",
     color: theme.palette.text.secondary,
-    height: '94vh',
+    height: "90vh",
     display: "flex",
     flexDirection: "column",
   },
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
   },
   graphContainer: {
-    height: "50%"
+    height: "48%"
   },
   newsContainer: {
     height: "50%",

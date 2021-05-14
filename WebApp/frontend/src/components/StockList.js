@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
     },
     appBar: {
         backgroundColor: "#03a9f4        ",
+    },
+    list: {
+        overflow: "auto"
     }
 }));
 
@@ -100,7 +103,7 @@ const StockList = (props) => {
                     />
                 </Toolbar>
             </AppBar>
-            <List>
+            <List className={classes.list}>
                 {loading ? <Loading></Loading> :
                     stocks.map((stock) => {
                         const prevDay = predictions ? predictions[stock.stockTicker][0] : {};

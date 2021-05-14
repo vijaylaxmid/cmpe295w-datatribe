@@ -106,11 +106,11 @@ const ProfilePage = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const user = await apiClient(`/api/user/sushrut/info`, {
+        const user = await apiClient(`/api/user/abc/info`, {
           method: "GET",
         });
 
-        setusername(user.user);
+        setusername(user.userName);
         setbuyingpower(user.buyingPower);
         setaddress(user.address);
         setphonenum(user.phone);
@@ -132,7 +132,6 @@ const ProfilePage = () => {
             <Avatar
               alt={username}
               className={classes.profileImage}
-              src={avatar}
             ></Avatar>
             <Typography
               align={"center"}
