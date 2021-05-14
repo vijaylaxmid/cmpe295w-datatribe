@@ -147,6 +147,7 @@ def display_all_predictions():
             # final_lines = csvf.readlines()[-2:]
             # # key = rows['date']
             # 
+            #print(csv_filepath)
             _rows = []
             csvReader = csv.DictReader(csvf)
             # Convert each row into a dictionary
