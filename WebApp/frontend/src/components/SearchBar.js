@@ -38,14 +38,16 @@ class SearchBar extends Component {
     // handle event for button click
     handleClick(e) {
         //if(e) e.preventDefault();
-
         this.setState({
-            search: '',
             term: this.state.search
-
         });
 
+        // Third party search API
         let url = "https://ticker-2e1ica8b9.now.sh/keyword/" + this.state.search
+
+        // Alpha vantage search API
+        const alphaKey = "I5C4NMO25BKCEA78";
+        let alphaUrl = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + this.state.search + "&apikey=${alphaKey}";
 
         const requestOptions = {
             method: "GET",
@@ -56,15 +58,44 @@ class SearchBar extends Component {
             },
         };  
 
-        // call API to fetch live stock info
-        fetch(url, requestOptions)
+        // // call API to fetch live stock info
+        // fetch(url, requestOptions)
+        // .then(response => {
+        //     return response.json();
+        // })
+        // .then(data => {
+        //     this.setState({
+        //         gridData: data
+        //     });
+        // })
+        // .catch(error => {
+        //     console.log(error);
+        // });
+
+        // call to ALPHA VANTAGE API
+        fetch(alphaUrl, requestOptions)
         .then(response => {
             return response.json();
         })
         .then(data => {
-            this.setState({
-                gridData: data
-            });
+            if (data.bestMatches != undefined) {
+                let result = data.bestMatches.map( (stock) =>{
+                        return {   
+                        symbol: stock['1. symbol'],
+                        name: stock['2. name']
+                        }
+                })
+                // this.setState({
+                //     gridData: result
+                // });
+                this.setState((state) => {
+                    return {
+                      ...state,
+                      gridData: result
+                    }
+                  })
+            }
+
         })
         .catch(error => {
             console.log(error);

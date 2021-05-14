@@ -65,7 +65,7 @@ const StockLineGraph = (props) => {
             <Line
                 data={trend}
                 width={100}
-                height={35}></Line>
+                height={32}></Line>
         </div>
     );
 }

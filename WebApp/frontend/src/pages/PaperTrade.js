@@ -24,7 +24,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
-import { AddAlert } from '@material-ui/icons';
+import { TablePagination } from '@material-ui/core';
 
 
 function TabPanel(props) {
@@ -124,6 +124,10 @@ const PaperTrade = () => {
     const [sharestoBuyOrSell, setSharestoBuyOrSell] = useState(0);
     const [tickerSymbol, setTickerSymbol] = useState();
     const [timeToForce, setTimeToForce] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [ordersRowsPerPage, setOrdersRowsPerPage] = React.useState(5);
+    const [ordersPage, setOrdersPage] = React.useState(0);
+    const [page, setPage] = React.useState(0);
     let history = useHistory();
 
     useEffect(() => {
@@ -138,9 +142,11 @@ const PaperTrade = () => {
                                     })
                                 });
                 const positions = await apiClient('/api/trade/getAllPositions', { method: "GET" });
+                
 
                 setAccount(accountDetails);
                 setOrders(orders);
+                // setPositions(positionArray);
                 setPositions(positions);
                 setLoading(false);
             } catch (error) {
@@ -204,6 +210,29 @@ const PaperTrade = () => {
         setValue(newValue);
     };
 
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+      };
+    
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+      };
+    
+    const handleOrdersChangePage = (event, newPage) => {
+        debugger
+        setOrdersPage(newPage);
+      };
+    
+    const handleOrdersChangeRowsPerPage = (event) => {
+        debugger
+        setOrdersRowsPerPage(parseInt(event.target.value, 10));
+        setOrdersPage(0);
+      };
+    
+    // const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+
     const positionsColumns = [
         { field: 'stock', headerName: 'Stock', width: 70 },
         { field: 'price', headerName: 'Price' },
@@ -261,32 +290,43 @@ const PaperTrade = () => {
                                 <Paper className={classes.paper}>
                                     <TableContainer component={Paper}>
                                         <Typography variant="h6"> Portfolio </Typography>
-                                        <Table aria-label="simple table">
-                                            <TableHead>
-                                            <TableRow>
-                                                {
-                                                    positionsColumns.map((header) => (
-                                                        <TableCell> {header.headerName} </TableCell>
-                                                    ))
-                                                }
-                                            </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {
-                                                    positions.map((row) => (
-                                                        <TableRow key={row.id}>
-                                                            <TableCell align="left">
-                                                                <Link href={ `/stock/${row._raw.symbol}` }>{row._raw.symbol}</Link>
-                                                            </TableCell>
-                                                            <TableCell align="left">{row._raw.avg_entry_price}</TableCell>
-                                                            <TableCell align="left">{row._raw.qty}</TableCell>
-                                                            <TableCell align="left">{ row._raw.market_value } </TableCell>
-                                                            {/* <TableCell align="left">{ row._raw.qty * row._raw.filled_avg_price } </TableCell> */}
-                                                        </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
+                                            <Table aria-label="simple table">
+                                                <TableHead>
+                                                <TableRow>
+                                                    {
+                                                        positionsColumns.map((header) => (
+                                                            <TableCell> {header.headerName} </TableCell>
+                                                        ))
+                                                    }
+                                                </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {
+                                                        positions
+                                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                        .map((row) => (
+                                                            <TableRow key={row.id}>
+                                                                <TableCell align="left">
+                                                                    <Link href={ `/stock/${row._raw.symbol}` }>{row._raw.symbol}</Link>
+                                                                </TableCell>
+                                                                <TableCell align="left">{row._raw.avg_entry_price}</TableCell>
+                                                                <TableCell align="left">{row._raw.qty}</TableCell>
+                                                                <TableCell align="left">{ row._raw.market_value } </TableCell>
+                                                                {/* <TableCell align="left">{ row._raw.qty * row._raw.filled_avg_price } </TableCell> */}
+                                                            </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
                                     </TableContainer>
+                                    <TablePagination
+                                        rowsPerPageOptions={[5, 10, 25]}
+                                        component="div"
+                                        count={positions.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        onChangePage={handleChangePage}
+                                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                                        />
                                 </Paper>
                                 <Paper className={classes.paper}>
                                     <TableContainer component={Paper}>
@@ -303,7 +343,9 @@ const PaperTrade = () => {
                                             </TableHead>
                                             <TableBody>
                                                 {
-                                                    orders.map((row) => (
+                                                    orders
+                                                    .slice(ordersPage * ordersRowsPerPage, ordersPage * ordersRowsPerPage + ordersRowsPerPage)
+                                                    .map((row) => (
                                                         <TableRow key={row._raw.id}>
                                                             <TableCell align="left">
                                                                 <Link href={ `/stock/${row._raw.symbol}` }>{row._raw.symbol}</Link>
@@ -318,6 +360,15 @@ const PaperTrade = () => {
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
+                                    <TablePagination
+                                        rowsPerPageOptions={[5, 10, 25]}
+                                        component="div"
+                                        count={orders.length}
+                                        rowsPerPage={ordersRowsPerPage}
+                                        page={ordersPage}
+                                        onChangePage={handleOrdersChangePage}
+                                        onChangeRowsPerPage={handleOrdersChangeRowsPerPage}
+                                        />
                                 </Paper>
                     </Grid>
 
