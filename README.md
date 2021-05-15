@@ -16,12 +16,28 @@ We have designed an application which can be used to predict future stock prices
   More details are included in the respective folder readme files.
 
 
+el.a
 
 ## Model
 
+- Using state of art LSTM time series model
 
+- Output dataframe includes a backtest simulation for "='buy' and 'sell , for the number of days
 
 
 ## References
 
+https://www.thepythoncode.com/article/stock-price-prediction-in-python-using-tensorflow-2-and-keras
+
+https://github.com/ranaroussi/yfinance/tree/master/yfinance
+
+https://github.com/peterlacour/finpie
+
+https://github.com/mariostoev/finviz
+
+https://github.com/lit26/finvizfinance
+
+https://stackoverflow.com/questions/61154530/calling-back-end-api-of-cnbc-in-python
+
+https://github.com/wilsonfreitas/awesome-quant#python
 
